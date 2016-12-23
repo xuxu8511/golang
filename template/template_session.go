@@ -4,8 +4,6 @@ import (
 	l4g "base/log4go"
 	"base/network"
 
-	"github.com/golang/protobuf/proto"
-
 	"io"
 	"time"
 )

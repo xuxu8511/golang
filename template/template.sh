@@ -9,9 +9,9 @@ if [ "$1" == "" ] || [ "$2" == "" ]; then
 fi
 
 cp command.go $1_command.go;
+cp pack_head.go $1_pack_head.go;
 cp template_session.go $1_session.go;
 cp template_config.go $1_config.go;
-cp template_protocol.go $1_protocol.go
 cp template.go $1.go;
 mkdir ../src/$1;
 sed -i "s/Template/$2/g" $1*;
