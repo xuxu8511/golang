@@ -31,6 +31,8 @@ type TcpConn struct {
 	conn      net.Conn
 	sessioner TcpSessioner
 
+	Conf *Config
+
 	closeOnce         sync.Once
 	closeFlag         int32
 	CloseChan         chan struct{}
@@ -40,13 +42,14 @@ type TcpConn struct {
 	waitGroup *sync.WaitGroup
 }
 
-func newTcpConn(conn net.Conn, ser TcpSessioner) *TcpConn {
+func newTcpConn(conn net.Conn, ser TcpSessioner, conf *Config) *TcpConn {
 	return &TcpConn{
 		conn:              conn,
 		sessioner:         ser,
+		conf:              conf,
 		CloseChan:         make(chan struct{}),
-		PacketSendChan:    make(chan []byte, SEND_CHAN_LEN),
-		PacketReceiveChan: make(chan []byte, READ_CHAN_LEN),
+		PacketSendChan:    make(chan []byte, conf.WriteMsgQueueSize),
+		PacketReceiveChan: make(chan []byte, conf.ReadMsgQueueSize),
 		waitGroup:         &sync.WaitGroup{},
 	}
 }
@@ -93,6 +96,8 @@ func (this *TcpConn) AsyncWrite(p []byte, timeout time.Duration) (err error) {
 		select {
 		case this.PacketSendChan <- p:
 			return nil
+		case <-time.After(this.Conf.WriteTimeOut):
+			return ErrWriteBlocking
 		default:
 			return ErrWriteBlocking
 		}
@@ -127,7 +132,7 @@ func (this *TcpConn) readLoop() {
 
 	reader := bufio.NewReader(this.conn)
 	for {
-		this.conn.SetReadDeadline(time.Now().Add(300 * time.Second))
+		this.conn.SetReadDeadline(time.Now().Add(this.conf.ReadTimeOut * time.Second))
 		p, err := this.sessioner.ReadMsg(reader)
 
 		if err != nil {

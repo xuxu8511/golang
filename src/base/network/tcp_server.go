@@ -26,6 +26,6 @@ func TCPServe(srv Server, conf *Config) {
 			}
 			return
 		}
-		newTcpConn(conn, srv.NewSession()).Do()
+		newTcpConn(conn, srv.NewSession(), conf).Do()
 	}
 }

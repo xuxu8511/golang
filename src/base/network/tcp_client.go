@@ -10,6 +10,6 @@ func TCPClientServe(sessioner TcpSessioner, conf *Config) bool {
 		return false
 	}
 
-	newTcpConn(conn, sessioner).Do()
+	newTcpConn(conn, sessioner, conf).Do()
 	return true
 }

@@ -53,10 +53,15 @@ func (this *TemplateSession) ReadMsg(r io.Reader) ([]byte, error) {
 
 	if ph.Len > PACK_HEAD_SIZE {
 		msgLen := ph.Len - PACK_HEAD_SIZE
+		if msgLen > this.conn.Conf.MaxReadMsgSize {
+			l4g.Error("msg len overflow, len:%d, cmd:%d, uid:%d, sid:%d", ph.Len, ph.Cmd, ph.Uid, ph.Sid)
+			return nil, network.ErrReadOverflow
+		}
+
 		bodyBuf = make([]byte, msgLen)
 		if _, err := io.ReadFull(r, bodyBuf); err != nil {
 			l4g.Error("read full fail: %+v", err)
-			return nil, err
+			return nil, network.ErrReadBlocking
 		}
 	}
 
