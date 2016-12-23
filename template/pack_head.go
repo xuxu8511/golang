@@ -3,9 +3,6 @@ package main
 import (
 	l4g "base/log4go"
 	"base/network"
-
-	"errors"
-	"io"
 )
 
 const (
