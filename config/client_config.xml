@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <log>
+    <config>../config/client_log.xml</config>
+  </log>
+  <server>
+    <port>127.0.0.1:20001</port> <!-- 监听的端口 -->
+	<MaxReadMsgSize>65536</MaxReadMsgSize> <!-- 接收包的最大长度 -->
+	<ReadMsgQueueSize>10240</ReadMsgQueueSize> <!-- 接收包的缓存队列长度 -->
+	<ReadTimeOut>600</ReadTimeOut> <!-- 接收包的超时(second) -->
+	<MaxWriteMsgSize>65536</MaxWriteMsgSize> <!-- 发送包的最大长度 -->
+	<WriteMsgQueueSize>10240</WriteMsgQueueSize> <!-- 发送包的缓存队列长度  -->
+	<WriteTimeOut>600</WriteTimeOut> <!-- 发送包的超时(second) -->
+  </server>
+</config>
